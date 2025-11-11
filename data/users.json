@@ -1,0 +1,30 @@
+{
+  "1": {
+    "id": 1,
+    "username": "alice",
+    "password": "demo123",
+    "name": "Alice Johnson",
+    "email": "alice.johnson@demo.local",
+    "department": "Engineering",
+    "notes": "Lead developer on Project Alpha. Prefers morning standups."
+  },
+  "2": {
+    "id": 2,
+    "username": "bob",
+    "password": "demo123",
+    "name": "Bob Smith",
+    "email": "bob.smith@demo.local",
+    "department": "Marketing",
+    "notes": "Working on Q4 campaign. Available for client meetings."
+  },
+  "3": {
+    "id": 3,
+    "username": "charlie",
+    "password": "demo123",
+    "name": "Charlie Brown",
+    "email": "charlie.brown@demo.local",
+    "department": "Sales",
+    "notes": "Top performer this quarter. Specializes in enterprise accounts."
+  }
+}
+

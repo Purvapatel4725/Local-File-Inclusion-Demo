@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDOR Demo - Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .token-display {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 4px;
+            display: none;
+        }
+        .profile-links {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .profile-links a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            padding: 8px 15px;
+            background-color: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .profile-links a:hover {
+            background-color: #0b7dda;
+        }
+        .error {
+            color: #d32f2f;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔓 IDOR Vulnerability Demo</h1>
+        
+        <div class="warning">
+            <strong>⚠️ Educational Purpose Only:</strong> This application contains intentional security vulnerabilities. 
+            Do not use in production or expose to public networks.
+        </div>
+
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" value="alice" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" value="demo123" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+
+        <div id="error" class="error"></div>
+
+        <div id="tokenDisplay" class="token-display">
+            <strong>✓ Logged in!</strong> Token: <code id="tokenValue"></code>
+            <p><small>This token is stored in your browser session. Use the profile links below to demonstrate the IDOR vulnerability.</small></p>
+        </div>
+
+        <div class="profile-links" id="profileLinks" style="display: none;">
+            <h3>View Profiles (IDOR Demo):</h3>
+            <p>Try accessing different user profiles. Notice that once logged in, you can access any profile by ID, even if it's not yours!</p>
+            <a href="/profile/1/html">Profile 1 (Alice)</a>
+            <a href="/profile/2/html">Profile 2 (Bob)</a>
+            <a href="/profile/3/html">Profile 3 (Charlie)</a>
+        </div>
+    </div>
+
+    <script>
+        let currentToken = null;
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = '';
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentToken = data.token;
+                    document.getElementById('tokenValue').textContent = currentToken;
+                    document.getElementById('tokenDisplay').style.display = 'block';
+                    document.getElementById('profileLinks').style.display = 'block';
+                    
+                    // Store token in sessionStorage for profile requests
+                    sessionStorage.setItem('demoToken', currentToken);
+                } else {
+                    errorDiv.textContent = 'Error: ' + data.error;
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Error: ' + error.message;
+            }
+        });
+
+        // Add token to profile links
+        document.querySelectorAll('.profile-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (!currentToken) {
+                    e.preventDefault();
+                    alert('Please login first');
+                    return;
+                }
+            });
+        });
+
+        // Check if already logged in
+        const storedToken = sessionStorage.getItem('demoToken');
+        if (storedToken) {
+            currentToken = storedToken;
+            document.getElementById('tokenValue').textContent = currentToken;
+            document.getElementById('tokenDisplay').style.display = 'block';
+            document.getElementById('profileLinks').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+

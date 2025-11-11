@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  idor-demo:
+    build: .
+    container_name: idor-demo
+    ports:
+      # IMPORTANT: Bind only to localhost (127.0.0.1) for safety
+      # Format: "host_ip:host_port:container_port"
+      - "127.0.0.1:5000:5000"
+    volumes:
+      # Mount data directory to persist users.json
+      - ./data:/app/data
+    restart: unless-stopped
+    # Ensure container runs with minimal privileges
+    security_opt:
+      - no-new-privileges:true
+
