@@ -17,11 +17,11 @@
             background: #ecf0f1;
             padding: 20px;
         }
-        .header {
+        .footer {
             text-align: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #bdc3c7;
-            margin-bottom: 30px;
+            padding: 20px 0;
+            border-top: 1px solid #bdc3c7;
+            margin-top: 40px;
             font-size: 12px;
             color: #7f8c8d;
         }
@@ -37,17 +37,6 @@
             margin-bottom: 20px;
             color: #34495e;
             font-weight: 400;
-        }
-        .warning {
-            background: #fff3cd;
-            border-left: 3px solid #ffc107;
-            padding: 12px 15px;
-            margin-bottom: 25px;
-            font-size: 14px;
-            color: #856404;
-        }
-        .warning strong {
-            font-weight: 600;
         }
         .content {
             margin: 25px 0;
@@ -94,6 +83,14 @@
             color: #7f8c8d;
             font-style: italic;
         }
+        .content textarea {
+            font-family: inherit;
+            resize: vertical;
+        }
+        .content input[type="text"],
+        .content input[type="email"] {
+            font-family: inherit;
+        }
         .error {
             background: #f8d7da;
             border-left: 3px solid #dc3545;
@@ -128,16 +125,8 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        Copyright 2025 by Purva Patel
-    </div>
-    
     <div class="container">
         <h1>Page Viewer</h1>
-        
-        <div class="warning">
-            <strong>Warning:</strong> This application contains intentional security vulnerabilities for educational purposes only. Do not expose this application to the internet or use it in production environments.
-        </div>
 
         <div class="content">
             <?php
@@ -233,6 +222,10 @@
         </div>
 
         <a href="index.php" class="back-link">← Back to Home</a>
+    </div>
+    
+    <div class="footer">
+        Copyright 2025 by Purva Patel
     </div>
 </body>
 </html>

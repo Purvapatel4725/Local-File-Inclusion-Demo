@@ -17,11 +17,11 @@
             background: #ecf0f1;
             padding: 20px;
         }
-        .header {
+        .footer {
             text-align: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #bdc3c7;
-            margin-bottom: 30px;
+            padding: 20px 0;
+            border-top: 1px solid #bdc3c7;
+            margin-top: 40px;
             font-size: 12px;
             color: #7f8c8d;
         }
@@ -37,17 +37,6 @@
             margin-bottom: 20px;
             color: #34495e;
             font-weight: 400;
-        }
-        .warning {
-            background: #fff3cd;
-            border-left: 3px solid #ffc107;
-            padding: 12px 15px;
-            margin-bottom: 25px;
-            font-size: 14px;
-            color: #856404;
-        }
-        .warning strong {
-            font-weight: 600;
         }
         p {
             margin-bottom: 15px;
@@ -124,16 +113,8 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        Copyright 2025 by Purva Patel
-    </div>
-    
     <div class="container">
         <h1>Local File Inclusion Demo</h1>
-        
-        <div class="warning">
-            <strong>Warning:</strong> This application contains intentional security vulnerabilities for educational purposes only. Do not expose this application to the internet or use it in production environments.
-        </div>
 
         <p>This demo application demonstrates a Local File Inclusion (LFI) vulnerability. Use the links below or the form to view different pages.</p>
 
@@ -153,6 +134,10 @@
             </form>
             <small>Try entering different file names to see how the application handles file inclusion.</small>
         </div>
+    </div>
+    
+    <div class="footer">
+        Copyright 2025 by Purva Patel
     </div>
 </body>
 </html>
