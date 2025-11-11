@@ -1,4 +1,4 @@
-# Local File Inclusion (LFI) Vulnerability Demo (Group 18)
+# Local File Inclusion (LFI) Vulnerability Demo 
 
 ## Overview
 
