@@ -1,3 +1,10 @@
+<?php
+// Auto-redirect if page parameter is provided in URL
+if (isset($_GET['page']) && !empty($_GET['page'])) {
+    header('Location: vulnerable.php?page=' . urlencode($_GET['page']));
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -127,13 +134,44 @@
 
         <div class="form-section">
             <h3>Custom Page Loader:</h3>
-            <form method="GET" action="vulnerable.php">
+            <form method="GET" action="vulnerable.php" id="pageForm">
                 <label for="page">Page to load:</label>
-                <input type="text" name="page" id="page" placeholder="e.g., about.php" value="<?php echo htmlspecialchars($_GET['page'] ?? ''); ?>">
+                <input type="text" name="page" id="page" placeholder="e.g., about.php" autocomplete="off">
                 <button type="submit">Load Page</button>
             </form>
-            <small>Try entering different file names to see how the application handles file inclusion.</small>
+            <small>Try entering different file names to see how the application handles file inclusion. Press Enter to load automatically.</small>
         </div>
+        
+        <script>
+            // Auto-submit form when Enter is pressed or after user stops typing
+            const pageInput = document.getElementById('page');
+            const pageForm = document.getElementById('pageForm');
+            let typingTimer;
+            
+            // Submit on Enter key
+            pageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (this.value.trim() !== '') {
+                        pageForm.submit();
+                    }
+                }
+            });
+            
+            // Auto-submit after user stops typing for 1 second (optional)
+            pageInput.addEventListener('input', function() {
+                clearTimeout(typingTimer);
+                const inputValue = this.value.trim();
+                if (inputValue !== '') {
+                    typingTimer = setTimeout(function() {
+                        // Only auto-submit if input has a reasonable length (at least 3 chars)
+                        if (inputValue.length >= 3) {
+                            pageForm.submit();
+                        }
+                    }, 1000);
+                }
+            });
+        </script>
     </div>
     
     <div class="footer">
