@@ -1,8 +1,8 @@
-# Local File Inclusion (LFI) Vulnerability Demo
+# Local File Inclusion (LFI) Vulnerability Demo 
 
 ## Overview
 
-This repository contains a minimal, intentionally-vulnerable web application designed to demonstrate **Local File Inclusion (LFI)** vulnerabilities in PHP. This demo is intended for educational purposes in a classroom or lab environment.
+This repository contains a minimal, intentionally-vulnerable web application designed to demonstrate **Local File Inclusion (LFI)** vulnerabilities in PHP. This demo is intended for educational purposes only.
 
 ### What is LFI?
 
@@ -10,7 +10,7 @@ This repository contains a minimal, intentionally-vulnerable web application des
 
 - Read sensitive files from the server (e.g., configuration files, source code)
 - Execute malicious code if file upload is also possible
-- Access system files through path traversal attacks (e.g., `../../etc/passwd`)
+- Access system files through path traversal attacks (e.g., `/etc/passwd`)
 
 ### Why is LFI Dangerous?
 
@@ -38,18 +38,29 @@ This application demonstrates a classic LFI vulnerability where user input (via 
 
 ### Running the Demo
 
-1. **Build and start the container:**
+1. **Clone the repository:**
    ```bash
-   docker compose up --build
+   git clone https://github.com/Purvapatel4725/Local-File-Inclusion-Demo
+   ```
+   ```bash
+   cd /Local-File-Inclusion-Demo
    ```
 
-2. **Access the application:**
+2. **Build and start the container:**
+   ```bash
+   docker-compose build
+   ```
+   ```bash
+   docker-compose up
+   ```
+
+3. **Access the application:**
    - Open your browser and navigate to: `http://127.0.0.1:8080`
    - Or use curl: `curl http://127.0.0.1:8080`
 
-3. **Stop the container:**
+4. **Stop the container:**
    ```bash
-   docker compose down
+   docker-compose down
    ```
 
 ## Demo Script
@@ -174,7 +185,6 @@ Path traversal from `includes/` using `../` goes up to `/var/www/html/`, allowin
 ├── README.md                 # This file
 ├── docker-compose.yml        # Docker Compose configuration
 ├── Dockerfile               # Docker image definition
-├── demo_commands.txt        # Exact commands for reproduction
 └── templates/
     ├── index.php            # Homepage with navigation
     ├── vulnerable.php       # The vulnerable file inclusion handler
@@ -300,16 +310,7 @@ This provides an additional layer of protection at the PHP configuration level.
 ## Educational Use
 
 This demo is designed for:
-- Security courses and training
 - Understanding LFI vulnerabilities
 - Learning about secure coding practices
 - Demonstrating the importance of input validation
-
-## License
-
-This project is provided for educational purposes only. Use at your own risk in isolated lab environments.
-
-## Support
-
-For questions or issues related to this demo, please refer to your course instructor or lab documentation.
 
